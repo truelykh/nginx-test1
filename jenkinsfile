@@ -28,7 +28,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying website to NGINX...'
-
                 sh '''
                     cp index.html /opt/homebrew/var/www/
                     cp index.css /opt/homebrew/var/www/
