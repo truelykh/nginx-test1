@@ -1,0 +1,60 @@
+pipeline {
+
+    agent any
+
+    triggers {
+        githubPush()
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo 'Validating NGINX website files...'
+
+                sh '''
+                    test -f index.html
+                    test -f index.css
+                    test -f index.js
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying website to NGINX...'
+
+                sh '''
+                    cp index.html /opt/homebrew/var/www/
+                    cp index.css /opt/homebrew/var/www/
+                    cp index.js /opt/homebrew/var/www/
+                '''
+            }
+        }
+
+        stage('Smoke Test') {
+            steps {
+                sh '''
+                    curl -f http://localhost:8080/
+                '''
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'NGINX deployment completed successfully!'
+        }
+
+        failure {
+            echo 'NGINX deployment failed!'
+        }
+    }
+}
