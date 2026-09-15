@@ -1,3 +1,5 @@
+//test nginx pipeline
+
 pipeline {
 
     agent any
